@@ -43,6 +43,18 @@
     height: '360', // プレイヤーの高さ
     width: '640', // プレイヤーの幅
    });
+
+   function y_iframeController(action, arg = null) {
+    player.postMessage('{"event":"command", "func":"' + action + '", "args":' + arg + '}', '*');
+   };
+
+   // 再生ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('play').addEventListener('click', function () {
+    y_iframeController('playVideo');
+   });
+
+
+
   }
   const url = document.getElementById('url');
   let videoId;
