@@ -2,15 +2,39 @@
 
 <head>
  <title>DeviceMotion Test</title>
+
+
+
+</head>
+
+<body>
+
+ <div>
+  <span><button id="play">PLAY</button></span>
+  <span><button id="pause">一時停止</button></span>
+  <span><button id="stop">停止</button></span>
+  <span><button id="clear">クリア</button></span>
+  <span><button id="seek">シークバー移動</button></span>
+  <span><button id="mute">ミュート（音声無し）</button></span>
+  <span><button id="unmute">アンミュート（音声あり）</button></span>
+  <span><button id="volume">音量を設定</button></span>
+ </div>
+ <iframe id="youtube" width="560" height="315" src="https://www.youtube.com/embed/lOvHx3_HuWs?enablejsapi=1&mute=1"
+  title="YouTube video player" frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
  <script>
 
 
-    HTML JS
+   HTML JS
 
   Result
-    Skip Results Iframe
+   Skip Results Iframe
 
-EDIT ON
+   EDIT ON
 
   const youtubeWindow = document.getElementById("youtube").contentWindow;
 
@@ -61,29 +85,7 @@ EDIT ON
   });
 
 
- </script>
-
-
-</head>
-
-<body>
-
- <div>
-  <span><button id="play">PLAY</button></span>
-  <span><button id="pause">一時停止</button></span>
-  <span><button id="stop">停止</button></span>
-  <span><button id="clear">クリア</button></span>
-  <span><button id="seek">シークバー移動</button></span>
-  <span><button id="mute">ミュート（音声無し）</button></span>
-  <span><button id="unmute">アンミュート（音声あり）</button></span>
-  <span><button id="volume">音量を設定</button></span>
- </div>
- <iframe id="youtube" width="560" height="315" src="https://www.youtube.com/embed/lOvHx3_HuWs?enablejsapi=1&mute=1"
-  title="YouTube video player" frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
-
+  -</script>
 
 </body>
 
