@@ -18,7 +18,6 @@
   <span><button id="mute">ミュート（音声無し）</button></span>
   <span><button id="unmute">アンミュート（音声あり）</button></span>
   <span><button id="volume">音量を設定</button></span>
-  <span><button id="url">url</button></span>
  </div>
 
 
@@ -27,17 +26,46 @@
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
   referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+ <div id="player"></div><br>
+ 好きなVtuberは?
+ <input type="radio" name="video_id" value="Lv46-MIAS8o">ギバラ
+ <input type="radio" name="video_id" value="EtKEC-4dW18">月ノ美兎
+ <input type="radio" name="video_id" value="5YOeKW0OfPE">本間ひまわり
 
+ <script>
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  const firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  let player;
+  function onYouTubePlayerAPIReady() {
+   player = new YT.Player('player', {
+    height: '360',
+    width: '640',
+   });
+  }
+
+  const video_ids = document.getElementsByName('video_id');
+  video_ids.forEach(function (video_id) {
+   video_id.addEventListener('click', function () {
+    const videoId = document.querySelector('input:checked[name=video_id]').value;
+    if (videoId) {
+     player.loadVideoById({ videoId: videoId });
+    }
+   })
+  });
+ </script>
 
 
 
  <script>
 
-  let targetUrl = "https://www.youtube.com/watch?v=xj8jrLSPKeI&t=8s?enablejsapi=1";
+  let targetUrl = "https://www.youtube.com/watch?v=xj8jrLSPKeI&t=8s";
 
-  document.getElementById('youtube').addEventListener('click', function () {
-   document.getElementById('youtube').contentWindow.location.replace(targetUrl);
-  });
+
+  document.getElementById('youtube').contentWindow.location.replace(targetUrl);
+
 
   const youtubeWindow = document.getElementById("youtube").contentWindow;
 
