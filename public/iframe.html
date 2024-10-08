@@ -18,7 +18,10 @@
   <span><button id="mute">ミュート（音声無し）</button></span>
   <span><button id="unmute">アンミュート（音声あり）</button></span>
   <span><button id="volume">音量を設定</button></span>
+  <span><button id="url">url</button></span>
  </div>
+
+
  <iframe id="youtube" width="560" height="315" src="https://www.youtube.com/embed/lOvHx3_HuWs?enablejsapi=1&mute=1"
   title="YouTube video player" frameborder="0"
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -26,8 +29,15 @@
 
 
 
+
+
  <script>
 
+  let targetUrl = "https://www.youtube.com/watch?v=xj8jrLSPKeI&t=8s";
+
+  document.getElementById('youtube').addEventListener('click', function () {
+   document.getElementById('youtube').contentWindow.location.replace(targetUrl);
+  });
 
   const youtubeWindow = document.getElementById("youtube").contentWindow;
 
