@@ -11,6 +11,7 @@
   <span id="y">0</span>
   <span id="z">0</span>
  </div>
+ <div id="info">動いたよー</div>
  <script>
   function deviceMotionRequest() {
    if (DeviceMotionEvent.requestPermission) {
@@ -22,18 +23,52 @@
          alert('event.accelerationIncludingGravity is null');
          return;
         }
+
+
+
+
         document.getElementById('x').innerHTML = event.accelerationIncludingGravity.x;
         document.getElementById('y').innerHTML = event.accelerationIncludingGravity.y;
         document.getElementById('z').innerHTML = event.accelerationIncludingGravity.z;
+
+
+        const x = event.accelerationIncludingGravity.x;
+        const y = event.accelerationIncludingGravity.y;
+        if (x > l) {
+         document.getElementById('info').appendChild('<b>右</b>に振りました！');
+         sf();
+        }
+        else if (x < -l) {
+         document.getElementById('info').appendChild('<b>左</b>に振りました！');
+         sf();
+        }
+        else if (y > l) {
+         document.getElementById('info').appendChild('<b>上</b>に振りました！');
+         sf();
+        }
+        else if (y < -l) {
+         document.getElementById('info').appendChild('<b>下</b>に振りました！');
+         sf();
+        }
+        else return;
+
+       }
+
+
        })
-      }
-     })
-     .catch(console.error);
-   } else {
-    alert('DeviceMotionEvent.requestPermission is not found')
    }
+  }
+
+
+     )
+     .catch (console.error);
+   } else {
+   alert('DeviceMotionEvent.requestPermission is not found')
+  }
   }
  </script>
 </body>
+
+
 
 </html>
