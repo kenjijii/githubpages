@@ -1,0 +1,90 @@
+<html>
+
+<head>
+ <title>DeviceMotion Test</title>
+ <script>
+
+
+    HTML JS
+
+  Result
+    Skip Results Iframe
+
+EDIT ON
+
+  const youtubeWindow = document.getElementById("youtube").contentWindow;
+
+  // postMessageを送信する関数
+  function y_iframeController(action, arg = null) {
+   youtubeWindow.postMessage('{"event":"command", "func":"' + action + '", "args":' + arg + '}', '*');
+  };
+
+  // 再生ボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('play').addEventListener('click', function () {
+   y_iframeController('playVideo');
+  });
+
+  // 一時停止ボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('pause').addEventListener('click', function () {
+   y_iframeController('pauseVideo');
+  });
+
+  // 停止ボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('stop').addEventListener('click', function () {
+   y_iframeController('stopVideo');
+  });
+
+  // クリアボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('clear').addEventListener('click', function () {
+   y_iframeController('clearVideo');
+  });
+
+  // シークバー移動ボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('seek').addEventListener('click', function () {
+   //(secondsパラメータ : 指定の秒数の位置へ移動)
+   y_iframeController('seekTo', '[20]');
+  });
+
+  // ミュートボタン（音声無し）を押した時のアクション（JavaScriptの場合）
+  document.getElementById('mute').addEventListener('click', function () {
+   y_iframeController('mute');
+  });
+
+  // アンミュート（音声あり）ボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('unmute').addEventListener('click', function () {
+   y_iframeController('unMute');
+  });
+
+  // 音量を設定ボタンを押した時のアクション（JavaScriptの場合）
+  document.getElementById('volume').addEventListener('click', function () {
+   y_iframeController('setVolume', '[50]');
+  });
+
+
+ </script>
+
+
+</head>
+
+<body>
+
+ <div>
+  <span><button id="play">PLAY</button></span>
+  <span><button id="pause">一時停止</button></span>
+  <span><button id="stop">停止</button></span>
+  <span><button id="clear">クリア</button></span>
+  <span><button id="seek">シークバー移動</button></span>
+  <span><button id="mute">ミュート（音声無し）</button></span>
+  <span><button id="unmute">アンミュート（音声あり）</button></span>
+  <span><button id="volume">音量を設定</button></span>
+ </div>
+ <iframe id="youtube" width="560" height="315" src="https://www.youtube.com/embed/lOvHx3_HuWs?enablejsapi=1&mute=1"
+  title="YouTube video player" frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+
+</body>
+
+</html>
