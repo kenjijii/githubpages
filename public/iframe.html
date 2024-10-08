@@ -32,7 +32,14 @@
  <input type="radio" name="video_id" value="EtKEC-4dW18">月ノ美兎
  <input type="radio" name="video_id" value="5YOeKW0OfPE">本間ひまわり
 
+
+
+
+
  <script>
+
+
+
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/player_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
@@ -55,13 +62,9 @@
     }
    })
   });
- </script>
 
 
-
- <script>
-
-  let targetUrl = "https://www.youtube.com/watch?v=xj8jrLSPKeI&t=8s";
+  let targetUrl = "https://www.youtube.com/embed/5YOeKW0OfPE?enablejsapi=1&mute=1";
 
 
   document.getElementById('youtube').contentWindow.location.replace(targetUrl);
