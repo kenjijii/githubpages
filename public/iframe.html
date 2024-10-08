@@ -26,43 +26,44 @@
   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
   referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
- <div id="player"></div><br>
- 好きなVtuberは?
- <input type="radio" name="video_id" value="Lv46-MIAS8o">ギバラ
- <input type="radio" name="video_id" value="EtKEC-4dW18">月ノ美兎
- <input type="radio" name="video_id" value="5YOeKW0OfPE">本間ひまわり
-
-
-
-
-
+ <div id="ytplayer"></div>
+ <input type="text" id="url" style="width: 600px">
+ <!-- https://qiita.com/azukiazusa/items/2dc6407665785127cccc -->
  <script>
-
-
-
+  // IFrame API Playerを読み込む
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/player_api";
   const firstScriptTag = document.getElementsByTagName('script')[0];
   firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
+  // APIコードが読み込まれた後に、YouTube Playerを作成する
   let player;
   function onYouTubePlayerAPIReady() {
-   player = new YT.Player('player', {
-    height: '360',
-    width: '640',
+   player = new YT.Player('ytplayer', { // playerはiframeに置き換えるdivタグのid
+    height: '360', // プレイヤーの高さ
+    width: '640', // プレイヤーの幅
    });
   }
-
-  const video_ids = document.getElementsByName('video_id');
-  video_ids.forEach(function (video_id) {
-   video_id.addEventListener('click', function () {
-    const videoId = document.querySelector('input:checked[name=video_id]').value;
-    if (videoId) {
-     player.loadVideoById({ videoId: videoId });
+  const url = document.getElementById('url');
+  let videoId;
+  // url入力フォームの入力されたイベントを監視
+  url.addEventListener('input', () => {
+   // urlのv=以降が動画id
+   videoId = url.value.split('v=')[1];
+   // 正しいurlの形式だったとき
+   if (videoId) {
+    // &=クエリパラーメターがついていることがあるので取り除く
+    const ampersandPosition = videoId.indexOf('&');
+    if (ampersandPosition != -1) {
+     videoId = videoId.substring(0, ampersandPosition);
     }
-   })
+   }
+   // 指定さらた動画IDのサムネイルを読み込み、動画を再生する準備をする。
+   player.cueVideoById({ videoId: videoId });
   });
 
+ </script>
+ <script>
 
   // let targetUrl = "https://www.youtube.com/embed/5YOeKW0OfPE?enablejsapi=1&mute=1";
 
