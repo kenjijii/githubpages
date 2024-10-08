@@ -22,6 +22,15 @@
    font-size: 12px;
   }
  </style>
+
+</head>
+
+<body>
+
+
+ <div id="wrap">
+  スマホを振ると色が変わるよ
+ </div>
  <script>
   var wrap = document.getElementById('wrap');
   var y; // 縦方向の加速度を取得するための変数
@@ -194,16 +203,10 @@
    }
   });
 
+
+  document.addEventListener("click", function () { DeviceMotionEvent.requestPermission() });
+
  </script>
-</head>
-
-<body>
-
-
- <div id="wrap">
-  スマホを振ると色が変わるよ
- </div>
-
 </body>
 
 </html>
