@@ -7,206 +7,167 @@
 
  <title>シェーク</title>
  <style>
-  body {
-   margin: 0;
-   padding: 0;
+  .demo_icon {
+   border-radius: 50%;
+   width: 100px;
+   height: 100px;
+   border: solid #999 1px;
+   line-height: 100px;
+   text-align: center;
+   font-size: 9px;
   }
 
-  #wrap {
-   width: 100%;
-   height: 100vh;
-   background-color: #fff;
-   text-align: center;
-   line-height: 100vh;
-   font-size: 30px;
-   font-size: 12px;
+  .demo_icon.poyon {
+   animation: poyon 1.0s linear 0s;
+   background-color: #C00;
+   color: #FFF;
+  }
+
+
+  @keyframes poyon {
+   0% {
+    transform: scale(0.8, 1.4) translate(0%, -100%);
+   }
+
+   10% {
+    transform: scale(0.8, 1.4) translate(0%, -15%);
+   }
+
+   20% {
+    transform: scale(1.4, 0.6) translate(0%, 30%);
+   }
+
+   30% {
+    transform: scale(0.9, 1.1) translate(0%, -10%);
+   }
+
+   40% {
+    transform: scale(0.95, 1.2) translate(0%, -30%);
+   }
+
+   50% {
+    transform: scale(0.95, 1.2) translate(0%, -10%);
+   }
+
+   60% {
+    transform: scale(1.1, 0.9) translate(0%, 5%);
+   }
+
+   70% {
+    transform: scale(1.0, 1.0) translate(0%, 0%);
+   }
+
+   100% {
+    transform: scale(1.0, 1.0) translate(0%, 0%);
+   }
   }
  </style>
+ <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.2/howler.min.js"></script>
+ <script>
 
+  eff = new Howl({
+   src: ["/sound/demo/click/003.mp3"],
+   autoplay: false,
+   loop: false,
+   volume: 0.8
+  });
+
+
+  function ClickRequestDeviceSensor() {
+   //デバイスのイベントへのリクエスト許可確認
+   DeviceOrientationEvent.requestPermission().then(function (response) {
+    if (response === 'granted') {
+     //許可されたらイベントを実行する
+     window.addEventListener("devicemotion", devicemotionHandler);
+     //許可ボタンを消す
+     $('#sensorrequest').css('display', 'none');
+    }
+   }).catch(function (e) {
+    console.log(e);
+   });
+  }
+
+
+  //$(function(){
+  window.onload = () => {
+
+   if (window.DeviceOrientationEvent) {
+    if (DeviceOrientationEvent.requestPermission && typeof DeviceOrientationEvent.requestPermission === 'function') {
+
+     var banner = '<div  onclick="ClickRequestDeviceSensor();" class="btn" id="sensorrequest">加速度センサーの有効化</div>';
+     $('#demo_info').append(banner);
+
+    } else {
+     window.addEventListener("devicemotion", devicemotionHandler);
+    }
+
+
+
+   }
+
+  };
+
+  function devicemotionHandler(event) {
+
+
+   // X軸
+   var x = event.acceleration.x;
+   // Y軸
+   var y = event.acceleration.y;
+   // Z軸
+   var z = event.acceleration.z;
+
+   var l = 7;
+   if (x > l) {
+    $('#demo_data span').html('<b>右</b>に振りました！');
+    sf();
+   }
+   else if (x < -l) {
+    $('#demo_data span').html('<b>左</b>に振りました！');
+    sf();
+   }
+   else if (y > l) {
+    $('#demo_data span').html('<b>上</b>に振りました！');
+    sf();
+   }
+   else if (y < -l) {
+    $('#demo_data span').html('<b>下</b>に振りました！');
+    sf();
+   }
+   else return;
+
+  }
+
+  function sf() {
+   eff = new Howl({
+    src: ["/sound/demo/click/003.mp3"],
+    autoplay: false,
+    loop: false,
+    volume: 0.8
+   });
+   eff.play();
+   $(".demo_icon").removeClass("poyon").addClass("poyon");
+
+   $(".demo_icon").one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function () {
+    $(".demo_icon").removeClass('poyon');
+   });
+   $(".demo_icon").addClass('poyon');
+  }
+
+ </script>
 </head>
 
 <body>
 
 
- <div id="wrap">
-  スマホを振ると色が変わるよ
- </div>
- <script>
-  var wrap = document.getElementById('wrap');
-  var y; // 縦方向の加速度を取得するための変数
-  var size = 20; // 振ったと認識するサイズ
-  var shakeFlag = true; // trueであればcountをプラス、falseであればマイナスにするためのフラグ
-  var count = 0; // 振ったらこれがたまる。たまった量に応じて何かする
 
+ <div id="demo_info"></div>
+ <div id="demo_data"><span></span></div>
 
-  // 加速度が変化すると
-  window.addEventListener('devicemotion', function (event) {
-   // 加速度 Y軸
-   y = event.acceleration.y;
+ <div class="demo_icon">ふりふりしてください</div>
 
-   // 加速度が、sizeに指定した量より大きいもしくは-sizeより小さいときに、countを操作
-   if (y < -size || y > size) {
-    // shakeFlagがtrueなら
-    if (shakeFlag) {
-     // countをプラス
-     count++;
-    }
-    // shakeFlagがfalseなら
-    else {
-     // countをマイナス
-     count--;
-    }
-   }
-
-   // 色を変える処理
-   switch (count) {
-    case 0: // countが0のとき
-     wrap.style.backgroundColor = '#fff'; // ここで背景の色を変えていく
-     shakeFlag = true; // shakeFlagをtrueにする
-     break;
-    case 20:
-     wrap.style.backgroundColor = '#ffe';
-     break;
-    case 40:
-     wrap.style.backgroundColor = '#ffd';
-     break;
-    case 60:
-     wrap.style.backgroundColor = '#ffc';
-     break;
-    case 80:
-     wrap.style.backgroundColor = '#ffb';
-     break;
-    case 100:
-     wrap.style.backgroundColor = '#ffa';
-     break;
-    case 120:
-     wrap.style.backgroundColor = '#ff9';
-     break;
-    case 140:
-     wrap.style.backgroundColor = '#ff8';
-     break;
-    case 160:
-     wrap.style.backgroundColor = '#ff7';
-     break;
-    case 180:
-     wrap.style.backgroundColor = '#ff6';
-     break;
-    case 200:
-     wrap.style.backgroundColor = '#ff5';
-     break;
-    case 220:
-     wrap.style.backgroundColor = '#ff4';
-     break;
-    case 240:
-     wrap.style.backgroundColor = '#ff3';
-     break;
-    case 260:
-     wrap.style.backgroundColor = '#ff2';
-     break;
-    case 280:
-     wrap.style.backgroundColor = '#ff1';
-     break;
-    case 300:
-     wrap.style.backgroundColor = '#ff0';
-     break;
-    case 320:
-     wrap.style.backgroundColor = '#fe0';
-     break;
-    case 340:
-     wrap.style.backgroundColor = '#fd0';
-     break;
-    case 360:
-     wrap.style.backgroundColor = '#fc0';
-     break;
-    case 380:
-     wrap.style.backgroundColor = '#fb0';
-     break;
-    case 400:
-     wrap.style.backgroundColor = '#fa0';
-     break;
-    case 420:
-     wrap.style.backgroundColor = '#f90';
-     break;
-    case 440:
-     wrap.style.backgroundColor = '#f80';
-     break;
-    case 460:
-     wrap.style.backgroundColor = '#f70';
-     break;
-    case 480:
-     wrap.style.backgroundColor = '#f60';
-     break;
-    case 500:
-     wrap.style.backgroundColor = '#f50';
-     break;
-    case 520:
-     wrap.style.backgroundColor = '#f40';
-     break;
-    case 540:
-     wrap.style.backgroundColor = '#f30';
-     break;
-    case 560:
-     wrap.style.backgroundColor = '#f20';
-     break;
-    case 580:
-     wrap.style.backgroundColor = '#f10';
-     break;
-    case 600:
-     wrap.style.backgroundColor = '#f00';
-     break;
-    case 620:
-     wrap.style.backgroundColor = '#e00';
-     break;
-    case 640:
-     wrap.style.backgroundColor = '#d00';
-     break;
-    case 660:
-     wrap.style.backgroundColor = '#c00';
-     break;
-    case 680:
-     wrap.style.backgroundColor = '#b00';
-     break;
-    case 700:
-     wrap.style.backgroundColor = '#a00';
-     break;
-    case 720:
-     wrap.style.backgroundColor = '#900';
-     break;
-    case 740:
-     wrap.style.backgroundColor = '#800';
-     break;
-    case 760:
-     wrap.style.backgroundColor = '#700';
-     break;
-    case 780:
-     wrap.style.backgroundColor = '#600';
-     break;
-    case 800:
-     wrap.style.backgroundColor = '#500';
-     break;
-    case 820:
-     wrap.style.backgroundColor = '#400';
-     break;
-    case 840:
-     wrap.style.backgroundColor = '#300';
-     break;
-    case 860:
-     wrap.style.backgroundColor = '#200';
-     break;
-    case 880:
-     wrap.style.backgroundColor = '#100';
-     break;
-    case 900: // countが900のとき
-     wrap.style.backgroundColor = '#000';
-     shakeFlag = false; // shakeFlagをfalseにする
-     break;
-   }
-  });
-
-
-  document.addEventListener("click", function () { DeviceMotionEvent.requestPermission() });
-
- </script>
+ <script></script>
 </body>
 
 </html>
