@@ -62,15 +62,16 @@
    player.cueVideoById({ videoId: videoId });
   });
 
+ </script>
+ <script>
 
 
 
-
-  // const youtubeWindow = document.getElementById("youtube").contentWindow;
+  const youtubeWindow = document.getElementById("youtube").contentWindow;
 
   // postMessageを送信する関数
   function y_iframeController(action, arg = null) {
-   player.postMessage('{"event":"command", "func":"' + action + '", "args":' + arg + '}', '*');
+   youtubeWindow.postMessage('{"event":"command", "func":"' + action + '", "args":' + arg + '}', '*');
   };
 
   // 再生ボタンを押した時のアクション（JavaScriptの場合）
