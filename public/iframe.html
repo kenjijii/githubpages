@@ -46,9 +46,45 @@
    });
 
 
-   document.querySelector('.change-volume').addEventListener('click', () => {
-    //player.setVolume(50);
-    player.playVideo()
+   // 再生ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('play').addEventListener('click', function () {
+    player('playVideo');
+   });
+
+   // 一時停止ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('pause').addEventListener('click', function () {
+    player('pauseVideo');
+   });
+
+   // 停止ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('stop').addEventListener('click', function () {
+    player('stopVideo');
+   });
+
+   // クリアボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('clear').addEventListener('click', function () {
+    player('clearVideo');
+   });
+
+   // シークバー移動ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('seek').addEventListener('click', function () {
+    //(secondsパラメータ : 指定の秒数の位置へ移動)
+    player('seekTo', '[20]');
+   });
+
+   // ミュートボタン（音声無し）を押した時のアクション（JavaScriptの場合）
+   document.getElementById('mute').addEventListener('click', function () {
+    player('mute');
+   });
+
+   // アンミュート（音声あり）ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('unmute').addEventListener('click', function () {
+    player('unMute');
+   });
+
+   // 音量を設定ボタンを押した時のアクション（JavaScriptの場合）
+   document.getElementById('volume').addEventListener('click', function () {
+    player('setVolume', '[50]');
    });
 
   }
@@ -73,54 +109,6 @@
 
 
 
-
-  const youtubeWindow = document.getElementById("youtube").contentWindow;
-
-  // postMessageを送信する関数
-  function y_iframeController(action, arg = null) {
-   youtubeWindow.postMessage('{"event":"command", "func":"' + action + '", "args":' + arg + '}', '*');
-  };
-
-  // 再生ボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('play').addEventListener('click', function () {
-   y_iframeController('playVideo');
-  });
-
-  // 一時停止ボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('pause').addEventListener('click', function () {
-   y_iframeController('pauseVideo');
-  });
-
-  // 停止ボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('stop').addEventListener('click', function () {
-   y_iframeController('stopVideo');
-  });
-
-  // クリアボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('clear').addEventListener('click', function () {
-   y_iframeController('clearVideo');
-  });
-
-  // シークバー移動ボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('seek').addEventListener('click', function () {
-   //(secondsパラメータ : 指定の秒数の位置へ移動)
-   y_iframeController('seekTo', '[20]');
-  });
-
-  // ミュートボタン（音声無し）を押した時のアクション（JavaScriptの場合）
-  document.getElementById('mute').addEventListener('click', function () {
-   y_iframeController('mute');
-  });
-
-  // アンミュート（音声あり）ボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('unmute').addEventListener('click', function () {
-   y_iframeController('unMute');
-  });
-
-  // 音量を設定ボタンを押した時のアクション（JavaScriptの場合）
-  document.getElementById('volume').addEventListener('click', function () {
-   y_iframeController('setVolume', '[50]');
-  });
 
 
  </script>
