@@ -10,27 +10,67 @@
 <body>
 
  <div>
-  <button class="change-volume">dd</button>
+  <button id="translate">transelate</button>
   <span><button id="play">PLAY</button></span>
   <span><button id="pause">一時停止</button></span>
-  <span><button id="stop">停止</button></span>
-  <span><button id="clear">クリア</button></span>
+  <!-- <span><button id="stop">停止</button></span> -->
   <span><button id="seek">シークバー移動</button></span>
+  <!-- <span><button id="clear">クリア</button></span>
   <span><button id="mute">ミュート（音声無し）</button></span>
   <span><button id="unmute">アンミュート（音声あり）</button></span>
-  <span><button id="volume">音量を設定</button></span>
+  <span><button id="volume">音量を設定</button></span> -->
  </div>
 
 
- <!-- <iframe id="youtube" width="560" height="315" src="https://www.youtube.com/embed/lOvHx3_HuWs?enablejsapi=1&mute=1"
-  title="YouTube video player" frameborder="0"
-  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-  referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe> -->
-
  <div id="ytplayer"></div>
- <input type="text" id="url" style="width: 600px">
+ <input type="text" id="url" style="width: 600px" autocomplete="on">
  <!-- https://qiita.com/azukiazusa/items/2dc6407665785127cccc -->
  <script>
+
+
+
+  const API_KEY = '43a74d8d-2f77-4a6a-8684-84b8f3bcd1bf:fx';
+  const API_URL = 'https://api-free.deepl.com/v2/translate';
+
+  async function deeplTranslate(word) {
+   let deeplInput = word;
+   let sourceLang = "&source_lang=EN&target_lang=JA";
+   let content = encodeURI('auth_key=' + API_KEY + '&text=' + deeplInput + sourceLang);
+
+   let url = API_URL + '?' + content;
+   console.log(url);
+   try {
+    let response = await fetch(url);
+    if (response.ok) {
+     let res = await response.json();
+     return res;
+    } else {
+     throw new Error("Could not reach the API: " + response.statusText);
+    }
+   } catch (error) {
+    alert("翻訳失敗: " + error.message);
+    return null;
+   }
+  }
+
+
+
+
+  const tranceExchange = async (word) => {
+
+   const SelectNode = window.getSelection().anchorNode.parentElement;
+   const text = SelectNode.textContent;
+   const reWord = await deeplTranslate(text);
+   const translatedDiv = document.createElement('div');
+   translatedDiv.textContent = reWord.translations[0].text;
+   SelectNode.append(translatedDiv);
+
+   // SelectNode.append(reWord.translations[0].text);
+  };
+
+
+
+
   // IFrame API Playerを読み込む
   const tag = document.createElement('script');
   tag.src = "https://www.youtube.com/player_api";
@@ -39,53 +79,74 @@
 
   // APIコードが読み込まれた後に、YouTube Playerを作成する
   let player;
+  const onApiChange = _ => {
+   if (typeof player.setOption === 'function') {
+    player.setOption('captions', 'track', { languageCode: 'en' }) // undocumented call
+   }
+  }
   function onYouTubePlayerAPIReady() {
    player = new YT.Player('ytplayer', { // playerはiframeに置き換えるdivタグのid
     height: '360', // プレイヤーの高さ
     width: '640', // プレイヤーの幅
+    playerVars: {
+     cc_load_policy: 1
+    },
+    events: {
+     'onStateChange': onPlayerStateChange,
+     onApiChange
+    }
    });
+   // 字幕is on
+   function onPlayerStateChange(event) {
+    // 現在のプレーヤーの状態を取得
+    var ytStatus = event.data;
+    // 再生終了したとき
+    if (ytStatus == YT.PlayerState.ENDED) {
+     console.log('再生終了');
+     // 動画再生
+     event.target.playVideo();
+    }
+    // 再生中のとき
+    if (ytStatus == YT.PlayerState.PLAYING) {
+     console.log('再生中');
+    }
+    // 停止中のとき
+    if (ytStatus == YT.PlayerState.PAUSED) {
+     console.log('停止中');
+    }
+    // バッファリング中のとき
+    if (ytStatus == YT.PlayerState.BUFFERING) {
+     console.log('バッファリング中');
+    }
+    // 頭出し済みのとき
+    if (ytStatus == YT.PlayerState.CUED) {
+     console.log('頭出し済み');
+    }
+   }
 
 
-   // 再生ボタンを押した時のアクション（JavaScriptの場合）
    document.getElementById('play').addEventListener('click', function () {
-    player('playVideo');
+    player.playVideo()
    });
 
    // 一時停止ボタンを押した時のアクション（JavaScriptの場合）
    document.getElementById('pause').addEventListener('click', function () {
-    player('pauseVideo');
+    player.pauseVideo()
    });
+   document.getElementById('translate').addEventListener('click', async function () {
+    // const text = document.getElementById('caption-window-1').textContent;
+    // console.log(text)
+    // // player.pauseVideo();
+    
 
+   });
    // 停止ボタンを押した時のアクション（JavaScriptの場合）
-   document.getElementById('stop').addEventListener('click', function () {
-    player('stopVideo');
-   });
-
-   // クリアボタンを押した時のアクション（JavaScriptの場合）
-   document.getElementById('clear').addEventListener('click', function () {
-    player('clearVideo');
-   });
-
-   // シークバー移動ボタンを押した時のアクション（JavaScriptの場合）
    document.getElementById('seek').addEventListener('click', function () {
-    //(secondsパラメータ : 指定の秒数の位置へ移動)
-    player('seekTo', '[20]');
+    let currentTime = player.getCurrentTime();
+    // シークバーの移動
+    player.seekTo(currentTime - 60)
    });
 
-   // ミュートボタン（音声無し）を押した時のアクション（JavaScriptの場合）
-   document.getElementById('mute').addEventListener('click', function () {
-    player('mute');
-   });
-
-   // アンミュート（音声あり）ボタンを押した時のアクション（JavaScriptの場合）
-   document.getElementById('unmute').addEventListener('click', function () {
-    player('unMute');
-   });
-
-   // 音量を設定ボタンを押した時のアクション（JavaScriptの場合）
-   document.getElementById('volume').addEventListener('click', function () {
-    player('setVolume', '[50]');
-   });
 
   }
   const url = document.getElementById('url');
@@ -104,8 +165,8 @@
    }
    // 指定さらた動画IDのサムネイルを読み込み、動画を再生する準備をする。
    player.cueVideoById({ videoId: videoId });
-  });
 
+  });
 
 
 
