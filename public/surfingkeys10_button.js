@@ -1390,10 +1390,37 @@ const time = new Date().getTime();
    });
   }
   case location.href.startsWith('https://www.youtube.com/') && location.href: {
-   mapkey('sp', 'dddddddtab', function () {
+   mapkey('qq', '1こ戻す', async function () {
+    useYoutubeSpeakWords(1);
+   });
+   mapkey('qw', '2こ戻す', async function () {
+    useYoutubeSpeakWords(2);
+   });
+   mapkey('qe', '3こ戻す', async function () {
+    useYoutubeSpeakWords(3);
+   });
+   mapkey('qr', '4こ戻す', async function () {
+    useYoutubeSpeakWords(4);
+   });
+   mapkey('qt', '戻す', async function () {
+    useYoutubeSpeakWords()
+   });
+   mapkey('qt', '不老取得', async function () {
+    setTimeout(() => {
+     console.log('flowbite');
+    }, 2000);
+   });
+
+   mapkey('sp', 'オール翻訳', function () {
     // alert('ee')
     translateYoutube();
-   })
+   });
+
+   mapkey('qp', '文章を出す', async function () {
+    const { translated, splited } = await useYoutubeWrite();
+
+    console.log(translated, splited)
+   });
 
   }
   // youtube用
@@ -1543,7 +1570,7 @@ function buttons() {
    button.style.cursor = 'pointer';
    return button;
   };
-
+  document.querySelector('#ytp-caption-window-container').style.fontSize = '33px'
   const createInput = (id) => {
    const input = document.createElement('input');
    input.type = 'number';
@@ -1575,7 +1602,7 @@ function buttons() {
  });
 }
 
-mapkey('qq', 'kensaku', async function () {
+mapkey('qb', 'buttons', async function () {
 
  // alert('wodk')
  await buttons();
@@ -1602,84 +1629,169 @@ mapkey('qq', 'kensaku', async function () {
 
 
 
+// async function transSplitArray(word) {
+//  let splited = word.split(' ');
+
+//  const promises = splited.map(async (part) => {
+//   const translated = await deeplTranslate(part);
+//   return translated.translations[0].text;
+//  });
+
+//  // Wait for all promises to resolve
+//  const translated = await Promise.all(promises);
+//  return { translated, splited };
+// }
+
+// async function transSplit(word, SentenceNum) {
+//  let splited = word.split(' ');
+
+//  if (SentenceNum) {
+//   splited = splited.slice(-SentenceNum);
+//  }
+//  const promises = splited.map(async (part) => {
+//   const translated = await deeplTranslate(part);
+//   return [part, translated.translations[0].text];
+//  });
+
+//  // Wait for all promises to resolve
+//  const translatedPairs = await Promise.all(promises);
+//  const interleaved = translatedPairs.flat();
+//  console.log(interleaved);
+//  return interleaved;
+// }
+
+// // console.log(transSplit(word))
+
+// function sarabada(word, lang, onEndCallback) {
+//  if ('speechSynthesis' in window) {
+//   const uttr = new SpeechSynthesisUtterance();
+//   uttr.text = word;
+//   if (lang === 'jp') {
+//    uttr.lang = "ja-JP";
+//    uttr.rate = 1.2;
+//   } else {
+//    uttr.lang = "en-US";
+//    uttr.rate = 1;
+//   }
+//   uttr.pitch = 1;
+//   uttr.volume = 1;
+//   uttr.onend = onEndCallback;
+//   window.speechSynthesis.speak(uttr);
+//  }
+// }
+
+// function readWords(words, onEndCallback) {
+//  let index = 0;
+
+//  function speakNextWord() {
+//   if (index < words.length) {
+//    const word = words[index];
+//    const lang = index % 2 === 0 ? 'en' : 'jp';
+//    sarabada(word, lang, speakNextWord);
+//    index++;
+//   } else {
+//    onEndCallback();
+//   }
+//  }
+
+//  speakNextWord();
+// }
+
+// async function useYoutubeSpeakWords(SentenceNum) {
+//  const player = document.querySelector('#movie_player > div:nth-child(1) > video:nth-child(1)');
+//  player.pause();
+//  const text = document.getElementById('caption-window-1').innerText;
+//  console.lot(text)
+//  const result = await transSplit(text, SentenceNum);
+//  readWords(result, () => {
+//   player.play();
+//  });
+//  console.log(result);
+// }
+
+// async function useYoutubeWrite(SentenceNum) {
+//  const text = document.getElementById('caption-window-1').innerText;
+//  const result = await transSplitArray(text, SentenceNum);
+//  console.log(result);
+// }
 
 
-const API_KEY = '43a74d8d-2f77-4a6a-8684-84b8f3bcd1bf:fx';
-const API_URL = 'https://api-free.deepl.com/v2/translate';
+// // document.querySelector('.ytp-caption-segment').style.color = 'red'
 
-async function deeplTranslate(word) {
- let deeplInput = word;
- let sourceLang = "&source_lang=EN&target_lang=JA";
- let content = encodeURI('auth_key=' + API_KEY + '&text=' + deeplInput + sourceLang);
+// // (function () {
 
- let url = API_URL + '?' + content;
- console.log(url);
- try {
-  let response = await fetch(url);
-  if (response.ok) {
-   let res = await response.json();
-   return res;
-  } else {
-   throw new Error("Could not reach the API: " + response.statusText);
-  }
- } catch (error) {
-  alert("翻訳失敗: " + error.message);
-  return null;
+// //  // const targetNode = document.getElementById('some-id');
+// //  const targetNode = document.getElementById('ytp-caption-window-container');
+
+// //  // オブザーバの設定
+// //  const config = {
+// //   childList: true, 
+// //   subtree: true
+// //  };
+
+// //  // コールバック関数の定義
+// //  const callback = (mutationsList, observer) => {
+// //   for (let mutation of mutationsList) {
+// //    if (mutation.type === 'childList') {
+// //     console.log('子ノードが変更されました！');
+// //    }
+// //   }
+// //  };
+
+// //  // MutationObserverのインスタンスを作成
+// //  const observer = new MutationObserver(callback);
+
+// //  // 監視を開始
+// //  observer.observe(targetNode, config);
+
+
+function createTranslationContainer(target) {
+ const container = document.createElement('div');
+ container.style.display = 'flex';
+ container.style.flexDirection = 'row';
+ container.style.border = '1px solid black';
+ container.style.padding = '5px';
+ container.style.margin = '5px';
+ container.style.backgroundColor = 'white';
+ container.id = 'translation-container';
+
+
+ target.insertBefore(container, target.firstChild);
+}
+
+function addTranslationBox(original, translated) {
+ const container = document.getElementById('translation-container')
+ const box = document.createElement('div');
+ box.style.display = 'block';
+ box.style.flexDirection = 'row';
+ box.style.border = '1px solid black';
+ box.style.padding = '2px';
+ box.style.margin = '1px';
+
+ const originalText = document.createElement('div');
+ originalText.textContent = original;
+ originalText.style.marginRight = '10px';
+ originalText.style.flex = '1'; // Allow the original text to take up available space
+
+ const translatedText = document.createElement('span');
+ translatedText.textContent = translated;
+ translatedText.style.color = 'red';
+ translatedText.style.wordWrap = 'break-word'; // Allow the translated text to wrap
+ translatedText.style.flex = '1'; // Allow the translated text to take up available space
+
+ box.appendChild(originalText);
+ box.appendChild(translatedText);
+ container.appendChild(box);
+}
+
+
+const array1 = ['apple', 'banana', 'cherry'];
+const array2 = ['dog', 'elephant', 'frog'];
+function toHtml(array1, array2) {
+ for (let i = 0; i < array1.length; i++) {
+  addTranslationBox(array1[i], array2[i]);
  }
-};
-
-
-let word = `Cyrier from our vantage point to the south, you can see the sonic boom in the air at 20 seconds and hear it BOOM at 47 seconds.  Incredible body feel.
-`;
-function transSplit(word) {
- const splited = word.split(' ');
- const promises = splited.map(async (part) => {
-  const translated = await deeplTranslate(part);
-  return [part, translated.translations[0].text];
- });
-
- Promise.all(promises).then((translatedPairs) => {
-  const interleaved = translatedPairs.flat();
-  console.log(interleaved);
- });
 }
-
-
-
-
-
-let words = ['a', 'あ', 'pan', 'ぱん'];
-
-function sarabada(words, lang) {
- // ブラウザにWeb Speech API Speech Synthesis機能があるか判定
- if ('speechSynthesis' in window) {
-  // 発言を設定 (必須)
-  const uttr = new SpeechSynthesisUtterance();
-  // テキストを設定 (必須)
-  uttr.text = words;
-  // 言語を設定
-  if (lang === 'jp') {
-   uttr.lang = "ja-JP";
-  } else {
-   uttr.lang = "en-US";
-  }
-  uttr.rate = 1;
-  // 高さを設定
-  uttr.pitch = 1;
-  // 音量を設定
-  uttr.volume = 1;
-  // 発言を再生 (必須)
-  window.speechSynthesis.speak(uttr);
- }
-}
-
-function readWords(words) {
- words.forEach((word, index) => {
-  const lang = index % 2 === 0 ? 'en' : 'jp';
-  sarabada(word, lang);
- });
-}
-
-readWords(words);
-
-
+const dom = document.getElementById('lounge');
+createTranslationContainer(dom)
+toHtml(array1, array2)
