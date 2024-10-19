@@ -1400,15 +1400,19 @@ const time = new Date().getTime();
     useYoutubeSpeakWords(3);
    });
    mapkey('qr', '4こ戻す', async function () {
-    useYoutubeSpeakWords(4);
+
    });
-   mapkey('qt', '戻す', async function () {
-    useYoutubeSpeakWords()
-   });
+
+   // mapkey('qt', '戻す', async function () {
+   //  useYoutubeSpeakWords()
+   // });
    mapkey('qt', '不老取得', async function () {
-    setTimeout(() => {
-     console.log('flowbite');
-    }, 2000);
+    alert('d')
+    const target = document.getElementById('bottom-row')
+    getAndDo(target)
+
+    // const text = document.getElementById('caption-window-1').innerText;
+    // transSplitArray(text);
    });
 
    mapkey('sp', 'オール翻訳', function () {
@@ -1417,9 +1421,13 @@ const time = new Date().getTime();
    });
 
    mapkey('qp', '文章を出す', async function () {
-    const { translated, splited } = await useYoutubeWrite();
+    setInterval(() => {
+     const text = document.getElementById('caption-window-1').innerText;
+     console.log(text)
+    }, 5000);
+    // const { translated, splited } = await useYoutubeWrite();
 
-    console.log(translated, splited)
+    // console.log(translated, splited)
    });
 
   }
@@ -1629,85 +1637,73 @@ mapkey('qb', 'buttons', async function () {
 
 
 
-// async function transSplitArray(word) {
-//  let splited = word.split(' ');
 
-//  const promises = splited.map(async (part) => {
-//   const translated = await deeplTranslate(part);
-//   return translated.translations[0].text;
-//  });
+async function transSplit(word, SentenceNum) {
+ let splited = word.split(' ');
 
-//  // Wait for all promises to resolve
-//  const translated = await Promise.all(promises);
-//  return { translated, splited };
-// }
+ if (SentenceNum) {
+  splited = splited.slice(-SentenceNum);
+ }
+ const promises = splited.map(async (part) => {
+  const translated = await deeplTranslate(part);
+  return [part, translated.translations[0].text];
+ });
 
-// async function transSplit(word, SentenceNum) {
-//  let splited = word.split(' ');
+ // Wait for all promises to resolve
+ const translatedPairs = await Promise.all(promises);
+ const interleaved = translatedPairs.flat();
+ console.log(interleaved);
+ return interleaved;
+}
 
-//  if (SentenceNum) {
-//   splited = splited.slice(-SentenceNum);
-//  }
-//  const promises = splited.map(async (part) => {
-//   const translated = await deeplTranslate(part);
-//   return [part, translated.translations[0].text];
-//  });
+// console.log(transSplit(word))
 
-//  // Wait for all promises to resolve
-//  const translatedPairs = await Promise.all(promises);
-//  const interleaved = translatedPairs.flat();
-//  console.log(interleaved);
-//  return interleaved;
-// }
+function sarabada(word, lang, onEndCallback) {
+ if ('speechSynthesis' in window) {
+  const uttr = new SpeechSynthesisUtterance();
+  uttr.text = word;
+  if (lang === 'jp') {
+   uttr.lang = "ja-JP";
+   uttr.rate = 1.2;
+  } else {
+   uttr.lang = "en-US";
+   uttr.rate = 1;
+  }
+  uttr.pitch = 1;
+  uttr.volume = 1;
+  uttr.onend = onEndCallback;
+  window.speechSynthesis.speak(uttr);
+ }
+}
 
-// // console.log(transSplit(word))
+function readWords(words, onEndCallback) {
+ let index = 0;
 
-// function sarabada(word, lang, onEndCallback) {
-//  if ('speechSynthesis' in window) {
-//   const uttr = new SpeechSynthesisUtterance();
-//   uttr.text = word;
-//   if (lang === 'jp') {
-//    uttr.lang = "ja-JP";
-//    uttr.rate = 1.2;
-//   } else {
-//    uttr.lang = "en-US";
-//    uttr.rate = 1;
-//   }
-//   uttr.pitch = 1;
-//   uttr.volume = 1;
-//   uttr.onend = onEndCallback;
-//   window.speechSynthesis.speak(uttr);
-//  }
-// }
+ function speakNextWord() {
+  if (index < words.length) {
+   const word = words[index];
+   const lang = index % 2 === 0 ? 'en' : 'jp';
+   sarabada(word, lang, speakNextWord);
+   index++;
+  } else {
+   onEndCallback();
+  }
+ }
 
-// function readWords(words, onEndCallback) {
-//  let index = 0;
+ speakNextWord();
+}
 
-//  function speakNextWord() {
-//   if (index < words.length) {
-//    const word = words[index];
-//    const lang = index % 2 === 0 ? 'en' : 'jp';
-//    sarabada(word, lang, speakNextWord);
-//    index++;
-//   } else {
-//    onEndCallback();
-//   }
-//  }
-
-//  speakNextWord();
-// }
-
-// async function useYoutubeSpeakWords(SentenceNum) {
-//  const player = document.querySelector('#movie_player > div:nth-child(1) > video:nth-child(1)');
-//  player.pause();
-//  const text = document.getElementById('caption-window-1').innerText;
-//  console.lot(text)
-//  const result = await transSplit(text, SentenceNum);
-//  readWords(result, () => {
-//   player.play();
-//  });
-//  console.log(result);
-// }
+async function useYoutubeSpeakWords(SentenceNum) {
+ const player = document.querySelector('#movie_player > div:nth-child(1) > video:nth-child(1)');
+ player.pause();
+ const text = document.getElementById('caption-window-1').innerText;
+ console.lot(text)
+ const result = await transSplit(text, SentenceNum);
+ readWords(result, () => {
+  player.play();
+ });
+ console.log(result);
+}
 
 // async function useYoutubeWrite(SentenceNum) {
 //  const text = document.getElementById('caption-window-1').innerText;
@@ -1716,36 +1712,27 @@ mapkey('qb', 'buttons', async function () {
 // }
 
 
-// // document.querySelector('.ytp-caption-segment').style.color = 'red'
 
-// // (function () {
 
-// //  // const targetNode = document.getElementById('some-id');
-// //  const targetNode = document.getElementById('ytp-caption-window-container');
 
-// //  // オブザーバの設定
-// //  const config = {
-// //   childList: true, 
-// //   subtree: true
-// //  };
+async function transSplitArray(word) {
+ console.log(transSplitArray)
+ let splited = word.split(' ');
 
-// //  // コールバック関数の定義
-// //  const callback = (mutationsList, observer) => {
-// //   for (let mutation of mutationsList) {
-// //    if (mutation.type === 'childList') {
-// //     console.log('子ノードが変更されました！');
-// //    }
-// //   }
-// //  };
+ const promises = splited.map(async (part) => {
+  const translated = await deeplTranslate(part);
+  return translated.translations[0].text;
+ });
 
-// //  // MutationObserverのインスタンスを作成
-// //  const observer = new MutationObserver(callback);
-
-// //  // 監視を開始
-// //  observer.observe(targetNode, config);
-
+ // Wait for all promises to resolve
+ const translated = await Promise.all(promises);
+ console.log(translated, splited)
+ return { translated, splited };
+}
+// wordに入ったやつをトランスレートして、二つ配列返す
 
 function createTranslationContainer(target) {
+ console.log('createTranslationContainer');
  const container = document.createElement('div');
  container.style.display = 'flex';
  container.style.flexDirection = 'row';
@@ -1754,12 +1741,11 @@ function createTranslationContainer(target) {
  container.style.margin = '5px';
  container.style.backgroundColor = 'white';
  container.id = 'translation-container';
-
-
  target.insertBefore(container, target.firstChild);
 }
-
+// ターゲットの手前に箱
 function addTranslationBox(original, translated) {
+ console.log('addTranslationBox')
  const container = document.getElementById('translation-container')
  const box = document.createElement('div');
  box.style.display = 'block';
@@ -1785,13 +1771,136 @@ function addTranslationBox(original, translated) {
 }
 
 
-const array1 = ['apple', 'banana', 'cherry'];
-const array2 = ['dog', 'elephant', 'frog'];
-function toHtml(array1, array2) {
+function toHtml(array1, array2, target) {
+ console.log('toHtml')
+ createTranslationContainer(target);
  for (let i = 0; i < array1.length; i++) {
   addTranslationBox(array1[i], array2[i]);
  }
 }
-const dom = document.getElementById('lounge');
-createTranslationContainer(dom)
-toHtml(array1, array2)
+// これに入れるとターゲットに箱作ってあらい入れるはず？
+
+async function getAndDo(target) {
+ console.log('getAndDo')
+ const text = document.getElementById('caption-window-1').innerText;
+ const { translated, splited } = await transSplitArray(text);
+ toHtml(splited, translated, target);
+}
+// ようつべから、げっとして、ターゲット下に箱作るのを実行
+
+
+function createSimpleButton(text, onClick) {
+ const button = document.createElement('button');
+ button.textContent = text;
+ button.style.width = '100px';
+ button.style.height = '50px';
+ button.style.margin = '10px';
+ button.style.fontSize = '16px';
+ button.style.cursor = 'pointer';
+ button.addEventListener('click', onClick);
+ return button;
+}
+
+
+
+const executeButton = createSimpleButton('Execute', () => {
+ alert('Execute button clicked');
+});
+
+const dom = document.getElementById('talks_box');
+// createTranslationContainer(dom);
+// // toHtml(array1, array2);
+if (dom) {
+ dom.appendChild(executeButton);
+}
+
+// 実行
+
+// const dom = document.getElementById('lounge');
+// createTranslationContainer(dom)
+// toHtml(array1, array2)
+
+//要素の上に挿入
+
+
+
+
+const texts = ["Hello", "World", "This", "Is", "A", "Test"]; // Example array of texts
+const translations = ["こんにちは", "世界", "これ", "は", "テスト", "です"]; // Example array of translations
+function insertTextBoxes(texts, translations) {
+
+
+ document.body.insertAdjacentHTML('afterbegin', `
+    <div id="TC" style="z-index: 9999; position: absolute; top: 162px; left: 0; width: 100vw; height: 100px; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: flex-start; align-items: center; padding-left: 10px;"></div>
+    `);
+
+
+
+ const container = document.getElementById('TC');
+ texts.forEach((text, index) => {
+  const textBox = document.createElement('div');
+  textBox.style.position = 'relative';
+  textBox.style.margin = '0 2px';
+  textBox.style.padding = '2px';
+  // textBox.style.backgroundColor = 'white';
+  // textBox.style.border = '1px solid black';
+  textBox.style.fontSize = '1.4vw';
+  textBox.style.display = 'inline-block';
+
+  const translatedText = document.createElement('div');
+  translatedText.textContent = translations[index];
+  translatedText.style.position = 'absolute';
+  translatedText.style.fontSize = '.9vw';
+
+  translatedText.style.top = '100%';
+  translatedText.style.left = '0';
+  translatedText.style.width = '100%';
+  'lightgray';
+  translatedText.style.border = '1px solid rgba(255, 255, 255, 0.5)';
+  translatedText.style.boxSizing = 'border-box';
+
+  textBox.textContent = text;
+  textBox.appendChild(translatedText);
+  container.appendChild(textBox);
+ });
+}
+
+
+insertTextBoxes(texts, translations)
+
+
+function monitorCaptions() {
+ // 監視対象の要素を取得
+ const targetNode = document.getElementById('talks');
+
+ // オブザーバの設定
+ const config = {
+  characterData: true,
+  childList: true,
+  subtree: true
+ };
+
+ // コールバック関数の定義
+ const callback = (mutationsList, observer) => {
+  for (let mutation of mutationsList) {
+   if (mutation.type === 'childList') {
+
+    console.log('子ノードが変更されました！');
+    console.log(mutation.target.textContent);
+    document.getElementById('TC').innerText = mutation.target.textContent;
+   }
+  }
+ };
+
+ // MutationObserverのインスタンスを作成
+ const observer = new MutationObserver(callback);
+
+ // 監視を開始
+ observer.observe(targetNode, config);
+
+ // 必要がなくなったら監視を停止
+ // observer.disconnect();
+}
+
+monitorCaptions();
+
