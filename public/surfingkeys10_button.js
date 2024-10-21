@@ -1610,7 +1610,7 @@ function buttons() {
  });
 }
 
-mapkey('qb', 'buttons', async function () {
+mapkey('qb', 'scrolldowns', async function () {
 
  // alert('wodk')
  await buttons();
@@ -1640,7 +1640,6 @@ mapkey('qb', 'buttons', async function () {
 
 async function transSplit(word, SentenceNum) {
  let splited = word.split(' ');
-
  if (SentenceNum) {
   splited = splited.slice(-SentenceNum);
  }
@@ -1648,15 +1647,14 @@ async function transSplit(word, SentenceNum) {
   const translated = await deeplTranslate(part);
   return [part, translated.translations[0].text];
  });
-
  // Wait for all promises to resolve
  const translatedPairs = await Promise.all(promises);
  const interleaved = translatedPairs.flat();
  console.log(interleaved);
  return interleaved;
 }
+//:?wordに入ったやつをトランスレートして、二つ配列返す
 
-// console.log(transSplit(word))
 
 function sarabada(word, lang, onEndCallback) {
  if ('speechSynthesis' in window) {
@@ -1675,7 +1673,9 @@ function sarabada(word, lang, onEndCallback) {
   window.speechSynthesis.speak(uttr);
  }
 }
-
+//:?wordを読み上げる関数
+//:?langがjpなら日本語、enなら英語で読み上げる
+//:?onEndCallbackは読み上げ終了時に呼ばれるコールバック関数
 function readWords(words, onEndCallback) {
  let index = 0;
 
@@ -1692,6 +1692,9 @@ function readWords(words, onEndCallback) {
 
  speakNextWord();
 }
+//:?wordsを読み上げる関数
+//:?onEndCallbackは読み上げ終了時に呼ばれるコールバック関数
+//:?奇数番目の要素は英語、偶数番目の要素は日本語として読み上げる
 
 async function useYoutubeSpeakWords(SentenceNum) {
  const player = document.querySelector('#movie_player > div:nth-child(1) > video:nth-child(1)');
@@ -1713,62 +1716,49 @@ async function useYoutubeSpeakWords(SentenceNum) {
 
 
 
+//以下個別トランスレート
 
 
-async function transSplitArray(word) {
- console.log(transSplitArray)
- let splited = word.split(' ');
+// function createTranslationContainer(target) {
+//  console.log('createTranslationContainer');
+//  const container = document.createElement('div');
+//  container.style.display = 'flex';
+//  container.style.flexDirection = 'row';
+//  container.style.border = '1px solid black';
+//  container.style.padding = '5px';
+//  container.style.margin = '5px';
+//  container.style.backgroundColor = 'white';
+//  container.id = 'translation-container';
+//  target.insertBefore(container, target.firstChild);
+// }
+// // ターゲットの手前に箱
+// function addTranslationBox(original, translated) {
+//  console.log('addTranslationBox')
+//  const container = document.getElementById('translation-container')
+//  const box = document.createElement('div');
+//  box.style.display = 'block';
+//  box.style.flexDirection = 'row';
+//  box.style.border = '1px solid black';
+//  box.style.padding = '2px';
+//  box.style.margin = '1px';
 
- const promises = splited.map(async (part) => {
-  const translated = await deeplTranslate(part);
-  return translated.translations[0].text;
- });
+//  const originalText = document.createElement('div');
+//  originalText.textContent = original;
+//  originalText.style.marginRight = '10px';
+//  originalText.style.flex = '1'; // Allow the original text to take up available space
 
- // Wait for all promises to resolve
- const translated = await Promise.all(promises);
- console.log(translated, splited)
- return { translated, splited };
-}
-// wordに入ったやつをトランスレートして、二つ配列返す
+//  const translatedText = document.createElement('span');
+//  translatedText.textContent = translated;
+//  translatedText.style.color = 'red';
+//  translatedText.style.wordWrap = 'break-word'; // Allow the translated text to wrap
+//  translatedText.style.flex = '1'; // Allow the translated text to take up available space
 
-function createTranslationContainer(target) {
- console.log('createTranslationContainer');
- const container = document.createElement('div');
- container.style.display = 'flex';
- container.style.flexDirection = 'row';
- container.style.border = '1px solid black';
- container.style.padding = '5px';
- container.style.margin = '5px';
- container.style.backgroundColor = 'white';
- container.id = 'translation-container';
- target.insertBefore(container, target.firstChild);
-}
-// ターゲットの手前に箱
-function addTranslationBox(original, translated) {
- console.log('addTranslationBox')
- const container = document.getElementById('translation-container')
- const box = document.createElement('div');
- box.style.display = 'block';
- box.style.flexDirection = 'row';
- box.style.border = '1px solid black';
- box.style.padding = '2px';
- box.style.margin = '1px';
+//  box.appendChild(originalText);
+//  box.appendChild(translatedText);
+//  container.appendChild(box);
+// }
 
- const originalText = document.createElement('div');
- originalText.textContent = original;
- originalText.style.marginRight = '10px';
- originalText.style.flex = '1'; // Allow the original text to take up available space
 
- const translatedText = document.createElement('span');
- translatedText.textContent = translated;
- translatedText.style.color = 'red';
- translatedText.style.wordWrap = 'break-word'; // Allow the translated text to wrap
- translatedText.style.flex = '1'; // Allow the translated text to take up available space
-
- box.appendChild(originalText);
- box.appendChild(translatedText);
- container.appendChild(box);
-}
 
 
 function toHtml(array1, array2, target) {
@@ -1803,15 +1793,15 @@ function createSimpleButton(text, onClick) {
 
 
 
-const executeButton = createSimpleButton('Execute', () => {
- alert('Execute button clicked');
-});
+// const executeButton = createSimpleButton('Execute', () => {
+//  alert('Execute button clicked');
+// });
 
 const dom = document.getElementById('talks_box');
 // createTranslationContainer(dom);
 // // toHtml(array1, array2);
 if (dom) {
- dom.appendChild(executeButton);
+ dom.appendChild(execute
 }
 
 // 実行
@@ -1827,51 +1817,130 @@ if (dom) {
 
 const texts = ["Hello", "World", "This", "Is", "A", "Test"]; // Example array of texts
 const translations = ["こんにちは", "世界", "これ", "は", "テスト", "です"]; // Example array of translations
+
+
+
+async function transSplitArray(word) {
+ console.log(transSplitArray)
+ let splited = word.split(' ');
+
+ const promises = splited.map(async (part) => {
+  const translated = await deeplTranslate(part);
+  return translated.translations[0].text;
+ });
+
+ // Wait for all promises to resolve
+ const translated = await Promise.all(promises);
+ console.log(translated, splited)
+ return { translated, splited };
+}
+// wordに入ったやつをトランスレートして、二つ配列返す
+
+
+const { translated, splited } = transSplitArray('Hello World This Is A Test');
+
+
 function insertTextBoxes(texts, translations) {
-
-
- document.body.insertAdjacentHTML('afterbegin', `
-    <div id="TC" style="z-index: 9999; position: absolute; top: 162px; left: 0; width: 100vw; height: 100px; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: flex-start; align-items: center; padding-left: 10px;"></div>
-    `);
-
-
-
  const container = document.getElementById('TC');
  texts.forEach((text, index) => {
   const textBox = document.createElement('div');
   textBox.style.position = 'relative';
   textBox.style.margin = '0 2px';
   textBox.style.padding = '2px';
-  // textBox.style.backgroundColor = 'white';
+  textBox.style.color = 'white';
   // textBox.style.border = '1px solid black';
-  textBox.style.fontSize = '1.4vw';
+  textBox.style.fontSize = '1.7vw';
   textBox.style.display = 'inline-block';
-
   const translatedText = document.createElement('div');
   translatedText.textContent = translations[index];
   translatedText.style.position = 'absolute';
   translatedText.style.fontSize = '.9vw';
-
-  translatedText.style.top = '100%';
+  translatedText.style.top = 'baf100%';
   translatedText.style.left = '0';
   translatedText.style.width = '100%';
   'lightgray';
   translatedText.style.border = '1px solid rgba(255, 255, 255, 0.5)';
   translatedText.style.boxSizing = 'border-box';
-
   textBox.textContent = text;
   textBox.appendChild(translatedText);
   container.appendChild(textBox);
  });
 }
+function createControlButtons() {
+ document.body.insertAdjacentHTML('afterbegin', `
+   <div id="TC" style="z-index: 9999; position: absolute; top: 162px; left: 0; width: 100vw; height: 100px; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: flex-start; align-items: center; padding-left: 10px;"></div>
+   `);
+ const controlContainer = document.createElement('div');
+ controlContainer.style.position = 'absolute';
+ controlContainer.style.bottom = '-25px';
+ controlContainer.style.left = '0';
+ controlContainer.style.width = '100vw';
+ controlContainer.style.height = '25px';
+ controlContainer.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+ controlContainer.style.display = 'flex';
+ controlContainer.style.justifyContent = 'center';
+ controlContainer.style.alignItems = 'center';
+ controlContainer.style.zIndex = '99';
+ const startButton = document.createElement('button');
+ startButton.textContent = 'Start';
+ startButton.style.width = '100px';
+ startButton.style.height = '25px';
+ startButton.style.margin = '5px';
+ startButton.style.fontSize = '14px';
+ startButton.style.color = 'black';
+ startButton.style.cursor = 'pointer';
+ startButton.addEventListener('click', () => {
+  monitorCaptions();
+ });
+ const stopButton = document.createElement('button');
+ stopButton.textContent = 'justdoit';
+ stopButton.style.width = '100px';
+ stopButton.style.height = '25px';
+ stopButton.style.margin = '5px';
+ stopButton.style.fontSize = '14px';
+ stopButton.style.cursor = 'pointer';
+ stopButton.style.color = 'black';
+
+ stopButton.addEventListener('click', () => {
+  observer.disconnect();
+ });
+
+ const justDoit = document.createElement('button');
+ justDoit.textContent = 'DoNow';
+ justDoit.style.width = '100px';
+ justDoit.style.height = '25px';
+ justDoit.style.margin = '5px';
+ justDoit.style.fontSize = '14px';
+ justDoit.style.cursor = 'pointer';
+ justDoit.style.color = 'black';
+
+ justDoit.addEventListener('click', () => {
+  justDoit();
+ });
+ controlContainer.appendChild(startButton);
+ controlContainer.appendChild(stopButton);
+ controlContainer.appendChild(justDoit);
+ document.getElementById('TC').appendChild(controlContainer);
+};
+// createControlButtons();
+
+// insertTextBoxes(texts, translations);
 
 
-insertTextBoxes(texts, translations)
+
+function doit() {
+ const text = document.getElementById('caption-window-1').innerText;
+
+ const { translated, splited } = transSplitArray(text);
+ createControlButtons();
+ insertTextBoxes(splited, translated);
+ // console.log(translated, splited)
+}
 
 
 function monitorCaptions() {
  // 監視対象の要素を取得
- const targetNode = document.getElementById('talks');
+ const targetNode = document.getElementById('ytp-caption-window-container');
 
  // オブザーバの設定
  const config = {
@@ -1886,8 +1955,10 @@ function monitorCaptions() {
    if (mutation.type === 'childList') {
 
     console.log('子ノードが変更されました！');
-    console.log(mutation.target.textContent);
-    document.getElementById('TC').innerText = mutation.target.textContent;
+    const text = mutation.target.textContent;
+    const { translated, splited } = transSplitArray(text);
+    insertTextBoxes(splited, translated);
+    console.log(translated, splited);
    }
   }
  };
@@ -1901,6 +1972,3 @@ function monitorCaptions() {
  // 必要がなくなったら監視を停止
  // observer.disconnect();
 }
-
-monitorCaptions();
-
