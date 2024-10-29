@@ -1390,45 +1390,22 @@ const time = new Date().getTime();
    });
   }
   case location.href.startsWith('https://www.youtube.com/') && location.href: {
-   mapkey('qq', '1こ戻す', async function () {
-    useYoutubeSpeakWords(1);
-   });
    mapkey('qw', '2こ戻す', async function () {
     useYoutubeSpeakWords(2);
    });
    mapkey('qe', '3こ戻す', async function () {
     useYoutubeSpeakWords(3);
    });
-   mapkey('qr', '4こ戻す', async function () {
 
-   });
 
    // mapkey('qt', '戻す', async function () {
    //  useYoutubeSpeakWords()
    // });
-   mapkey('qt', '不老取得', async function () {
-    alert('d')
-    const target = document.getElementById('bottom-row')
-    getAndDo(target)
 
-    // const text = document.getElementById('caption-window-1').innerText;
-    // transSplitArray(text);
-   });
-
-   mapkey('sp', 'オール翻訳', function () {
-    // alert('ee')
+   mapkey('qa', 'オール翻訳音声', function () {
     translateYoutube();
    });
 
-   mapkey('qp', '文章を出す', async function () {
-    setInterval(() => {
-     const text = document.getElementById('caption-window-1').innerText;
-     console.log(text)
-    }, 5000);
-    // const { translated, splited } = await useYoutubeWrite();
-
-    // console.log(translated, splited)
-   });
 
   }
   // youtube用
@@ -1770,22 +1747,6 @@ async function useYoutubeSpeakWords(SentenceNum) {
 
 
 
-function toHtml(array1, array2, target) {
- console.log('toHtml')
- createTranslationContainer(target);
- for (let i = 0; i < array1.length; i++) {
-  addTranslationBox(array1[i], array2[i]);
- }
-}
-// これに入れるとターゲットに箱作ってあらい入れるはず？
-
-async function getAndDo(target) {
- console.log('getAndDo')
- const text = document.getElementById('caption-window-1').innerText;
- const { translated, splited } = await transSplitArray(text);
- toHtml(splited, translated, target);
-}
-// ようつべから、げっとして、ターゲット下に箱作るのを実行
 
 
 function createSimpleButton(text, onClick) {
@@ -1964,13 +1925,11 @@ function monitorCaptions() {
 
  });
 };
-mapkey('qn', 'doit', function () {
+mapkey('qr', 'youtubeトランスレーションbox', function () {
  doit();
 });
 
-mapkey('qm', 'doit', function () {
-
-
+mapkey('qw', '選択した翻訳と音に', function () {
 
  document.body.onclick = () => {
   document.body.onclick = null;
@@ -2023,13 +1982,6 @@ mapkey('qm', 'doit', function () {
   });
 
  };
-
-});
-
-
-mapkey('qc', 'speech', function () {
-
-
 
 });
 
